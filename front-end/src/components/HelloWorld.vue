@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form @submit.prevent="AjouterToDo">
+    <form @submit.prevent="AjouterToDo" v-if="edit == false">
       <div class="form-group">
         <label class="float-left">Titre</label>
         <input
@@ -29,6 +29,36 @@
         />
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <form @submit.prevent="update" v-if="edit == true">
+      <div class="form-group">
+        <label class="float-left">Titre</label>
+        <input
+          type="text"
+          class="form-control"
+          v-model="title"
+          placeholder="Entrer un titre"
+        />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <input
+          type="text"
+          class="form-control"
+          v-model="description"
+          placeholder="Entrer une description"
+        />
+      </div>
+      <div class="form-group">
+        <label>Priorité</label>
+        <input
+          type="number"
+          class="form-control"
+          v-model="priority"
+          placeholder="Entrer la priorité"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Editer</button>
     </form>
     <br />
     <br />
@@ -72,6 +102,8 @@ export default {
       priority: null,
       todos: {},
       todo: {},
+      edit: false,
+      idTodo: null,
     };
   },
   created() {
@@ -102,6 +134,47 @@ export default {
           this.todos = response.data.data;
         });
       });
+    },
+    editerToDo(id) {
+      console.log(id);
+      axios
+        .get(" http://localhost:8000/api/todo/find/" + id)
+        .then((response) => {
+          console.log(response);
+
+          this.title = response.data.data.title;
+          this.description = response.data.data.description;
+          this.priority = response.data.data.priority;
+        });
+      this.todo = {
+        title: this.title,
+        description: this.description,
+        priority: this.priority,
+      };
+      this.edit = true;
+      this.idTodo = id;
+      // axios
+      //   .put("http://localhost:8000/api/todo/update/" + id, this.todo)
+      //   .then((response) => {
+      //     console.log(response.data.data);
+      //   });
+    },
+    update() {
+      this.todo = {
+        title: this.title,
+        description: this.description,
+        priority: this.priority,
+      };
+      console.log(this.todo);
+
+      axios
+        .put("http://localhost:8000/api/todo/update/" + this.idTodo, this.todo)
+        .then(() => {
+          axios.get(" http://localhost:8000/api/todo/read").then((response) => {
+            this.todos = response.data.data;
+          });
+        });
+      this.edit = false;
     },
   },
 };
