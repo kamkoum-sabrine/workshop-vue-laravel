@@ -17,4 +17,14 @@ class TodoController extends Controller
         );
         return response()->json(["data" => $todo], 201);
     }
+
+    public function read(){
+        $todos = Todo::all();
+        if (empty($todos)){
+            return response()->json(["message" => "Auncune tache trouvée"]);
+        }
+        else {
+            return response()->json(["data" => $todos], 200);
+        }
+    }
 }
