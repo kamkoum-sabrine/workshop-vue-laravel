@@ -57,4 +57,14 @@ class TodoController extends Controller
         $todo->delete();
         return response()->json(["message" => "Tache supprimée avec succés! "], 200);
     }
+
+    public function find($id) {
+        $todo = Todo::find($id);
+        if ($todo){
+            return response()->json(["data" => $todo],200);
+        }
+        else {
+            return response()->json(["message" => "Tache non trouvée !"]);
+        }
+    }
 }
