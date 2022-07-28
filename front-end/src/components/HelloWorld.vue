@@ -146,18 +146,9 @@ export default {
           this.description = response.data.data.description;
           this.priority = response.data.data.priority;
         });
-      this.todo = {
-        title: this.title,
-        description: this.description,
-        priority: this.priority,
-      };
+
       this.edit = true;
       this.idTodo = id;
-      // axios
-      //   .put("http://localhost:8000/api/todo/update/" + id, this.todo)
-      //   .then((response) => {
-      //     console.log(response.data.data);
-      //   });
     },
     update() {
       this.todo = {
@@ -165,16 +156,15 @@ export default {
         description: this.description,
         priority: this.priority,
       };
-      console.log(this.todo);
 
       axios
         .put("http://localhost:8000/api/todo/update/" + this.idTodo, this.todo)
         .then(() => {
           axios.get(" http://localhost:8000/api/todo/read").then((response) => {
             this.todos = response.data.data;
+            this.edit = false;
           });
         });
-      this.edit = false;
     },
   },
 };
